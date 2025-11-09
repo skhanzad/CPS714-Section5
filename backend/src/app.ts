@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import memberRouter from './routes/memberRoutes';
 import adminRouter from './routes/adminRoutes';
+import loanRouter from './routes/loanRoutes';
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.get('/health', (_req, res) => {
 
 app.use('/api/members', memberRouter);
 app.use('/api/admin', adminRouter);
-
+app.use('/api/loans', loanRouter);
 app.use((err: Error, _req: express.Request, res: express.Response) => {
   console.error(err);
   res.status(500).json({ message: err.message });
