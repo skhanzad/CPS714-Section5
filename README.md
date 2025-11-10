@@ -62,6 +62,15 @@ Member registration and authentication stack for the Springfield Public Library 
    - `GET /api/admin/applications?status=pending` — list applications (requires `x-admin-key`).
    - `POST /api/admin/applications/:applicationId/approve` — approve + issue card (requires `x-admin-key`).
 
+   FIREBASE_PROJECT_ID=cps714-section5
+
+   for the FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY in Firebase , hop into Project Settings > Service Accounts > Firebase Admin SDK.
+
+   there you would see the Firebase service account and a button to generate a new private key.
+
+   The ADMIN_API_KEY is just a random string you get set locally.
+   
+
 ## Frontend Setup
 
 1. Copy `frontend/.env.example` to `frontend/.env` and set `VITE_API_URL` to the backend base URL.
