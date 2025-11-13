@@ -1,0 +1,10 @@
+import express from 'express';
+import { createItem, listItems, getItem, updateItem, deleteItem, assignRFID } from '../controllers/itemController.js';
+const router = express.Router();
+router.post('/', createItem);
+router.get('/', listItems);
+router.get('/:id', getItem);
+router.patch('/:id', updateItem);
+router.delete('/:id', deleteItem);
+router.post('/:id/rfid', assignRFID);
+export default router;
