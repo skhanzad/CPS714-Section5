@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest"
   },
   "dependencies": {
     "@firebase/firestore": "^4.9.2",
@@ -21,11 +22,17 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/node": "^22.5.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^5.1.1",
     "babel-plugin-react-compiler": "^1.0.0",
-    "typescript": "^5.5.4"
+    "jsdom": "^27.2.0",
+    "typescript": "^5.5.4",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.13"
   }
 }
