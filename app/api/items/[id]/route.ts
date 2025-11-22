@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
+import { LibraryItem } from '@/types';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function GET(
   request: NextRequest,
@@ -50,15 +52,15 @@ export async function PATCH(
       );
     }
 
-    const updateData: any = {
-      updatedAt: new Date().toISOString(),
+    const updateData: Partial<LibraryItem> = {
+      updatedAt: Timestamp.now(),
     };
 
     if (isCheckedOut !== undefined) {
       updateData.isCheckedOut = isCheckedOut;
       if (!isCheckedOut) {
-        updateData.currentBorrowerId = null;
-        updateData.dueDate = null;
+        updateData.currentBorrowerId = undefined;
+        updateData.dueDate = undefined;
       }
     }
 

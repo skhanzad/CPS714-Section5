@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     const itemData = itemSnap.data();
-    if (!itemData.isCheckedOut) {
+    if (!itemData || !itemData.isCheckedOut) {
       return NextResponse.json(
         { error: 'Item is currently available, no hold needed' },
         { status: 400 }
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     const activeHolds = activeHoldsQuery;
     const position = activeHolds.size + 1;
 
-    const now = new Date().toISOString();
+    const now = Timestamp.now();
     const holdData = {
       itemId,
       libraryCardNumber,
@@ -88,22 +89,22 @@ export async function GET(request: NextRequest) {
     const itemId = searchParams.get('itemId');
     const status = searchParams.get('status');
 
-    let holdsQuery = db.collection('reservations');
+    let holdsQuery: FirebaseFirestore.Query = db.collection('reservations');
 
     if (libraryCardNumber) {
-      holdsQuery = holdsQuery.where('libraryCardNumber', '==', libraryCardNumber) as any;
+      holdsQuery = holdsQuery.where('libraryCardNumber', '==', libraryCardNumber);
     }
     if (itemId) {
-      holdsQuery = holdsQuery.where('itemId', '==', itemId) as any;
+      holdsQuery = holdsQuery.where('itemId', '==', itemId);
     }
     if (status) {
-      holdsQuery = holdsQuery.where('status', '==', status) as any;
+      holdsQuery = holdsQuery.where('status', '==', status);
     }
 
-    holdsQuery = holdsQuery.orderBy('placedAt', 'desc') as any;
+    holdsQuery = holdsQuery.orderBy('placedAt', 'desc');
 
     const holdsSnapshot = await holdsQuery.get();
-    const holds = holdsSnapshot.docs.map((doc: any) => {
+    const holds = holdsSnapshot.docs.map((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
       const data = doc.data();
       return {
         id: doc.id,

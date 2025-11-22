@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +14,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const now = new Date().toISOString();
+    const now = Timestamp.now();
     const itemData = {
       title,
       author,

@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase-admin/firestore';
+
 export interface LibraryItem {
   id: string;
   title: string;
@@ -5,9 +7,9 @@ export interface LibraryItem {
   isbn?: string;
   isCheckedOut: boolean;
   currentBorrowerId?: string;
-  dueDate?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  dueDate?: Timestamp;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 export interface Hold {
@@ -18,12 +20,12 @@ export interface Hold {
   memberEmail: string;
   status: 'active' | 'ready' | 'fulfilled' | 'cancelled' | 'expired';
   position: number;
-  placedAt: Date;
-  notifiedAt?: Date;
-  readyAt?: Date;
-  expiresAt?: Date;
-  fulfilledAt?: Date;
-  updatedAt: Date;
+  placedAt: Timestamp;
+  notifiedAt?: Timestamp;
+  readyAt?: Timestamp;
+  expiresAt?: Timestamp;
+  fulfilledAt?: Timestamp;
+  updatedAt: Timestamp;
 }
 
 export interface Member {
@@ -31,7 +33,7 @@ export interface Member {
   name: string;
   email: string;
   phone?: string;
-  createdAt: Date;
+  createdAt: Timestamp;
 }
 
 export interface HoldShelfItem {
@@ -41,8 +43,8 @@ export interface HoldShelfItem {
   libraryCardNumber: string;
   memberName: string;
   itemTitle: string;
-  placedOnShelfAt: Date;
-  expiresAt: Date;
+  placedOnShelfAt: Timestamp;
+  expiresAt: Timestamp;
   notificationSent: boolean;
 }
 

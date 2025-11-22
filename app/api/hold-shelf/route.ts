@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { FieldValue } from 'firebase-admin/firestore';
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,16 +42,15 @@ export async function POST(request: NextRequest) {
     const nextHold = activeHoldsQuery.docs[0];
     const holdData = nextHold.data();
 
-    const now = new Date();
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
+    const now = Timestamp.now();
+    const expiresAt = Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
 
     await db.collection('reservations').doc(nextHold.id).update({
       status: 'ready',
-      readyAt: now.toISOString(),
-      notifiedAt: now.toISOString(),
-      expiresAt: expiresAt.toISOString(),
-      updatedAt: now.toISOString(),
+      readyAt: now,
+      notifiedAt: now,
+      expiresAt: expiresAt,
+      updatedAt: now,
     });
 
     const holdShelfData = {
@@ -60,8 +59,8 @@ export async function POST(request: NextRequest) {
       libraryCardNumber: holdData.libraryCardNumber,
       memberName: holdData.memberName,
       itemTitle: itemData?.title || 'Unknown',
-      placedOnShelfAt: now.toISOString(),
-      expiresAt: expiresAt.toISOString(),
+      placedOnShelfAt: now,
+      expiresAt: expiresAt,
       notificationSent: true,
     };
 

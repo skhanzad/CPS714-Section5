@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function GET(
   request: NextRequest,
@@ -57,7 +58,7 @@ export async function PATCH(
       );
     }
 
-    const now = new Date().toISOString();
+    const now = Timestamp.now();
     const updateData: any = {
       status,
       updatedAt: now,
@@ -66,9 +67,8 @@ export async function PATCH(
     if (status === 'ready') {
       updateData.readyAt = now;
       updateData.notifiedAt = now;
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7);
-      updateData.expiresAt = expiresAt.toISOString();
+      const expiresAt = Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+      updateData.expiresAt = expiresAt;
     } else if (status === 'fulfilled') {
       updateData.fulfilledAt = now;
     }

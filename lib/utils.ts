@@ -1,34 +1,25 @@
 import { db } from './firebase';
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  updateDoc,
-  doc,
-  orderBy,
-} from 'firebase/firestore';
-
+import { HoldShelfItem } from '@/types';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function recalculateQueuePositions(itemId: string) {
   try {
-    const holdsQuery = query(
-      collection(db, 'holds'),
-      where('itemId', '==', itemId),
-      where('status', '==', 'active'),
-      orderBy('placedAt', 'asc')
-    );
+    const holdsQuery = db
+      .collection('holds')
+      .where('itemId', '==', itemId)
+      .where('status', '==', 'active')
+      .orderBy('placedAt', 'asc');
 
-    const holdsSnapshot = await getDocs(holdsQuery);
-    
+    const holdsSnapshot = await holdsQuery.get();
+
     const updates = holdsSnapshot.docs.map((holdDoc, index) => {
-      return updateDoc(doc(db, 'reservations', holdDoc.id), {
+      return db.collection('reservations').doc(holdDoc.id).update({
         position: index + 1,
       });
     });
 
     await Promise.all(updates);
-    
+
     return { success: true, updatedCount: updates.length };
   } catch (error) {
     console.error('Error recalculating queue positions:', error);
@@ -36,20 +27,18 @@ export async function recalculateQueuePositions(itemId: string) {
   }
 }
 
-
 export async function getQueuePosition(itemId: string, holdId: string) {
   try {
-    const holdsQuery = query(
-      collection(db, 'holds'),
-      where('itemId', '==', itemId),
-      where('status', '==', 'active'),
-      orderBy('placedAt', 'asc')
-    );
+    const holdsQuery = db
+      .collection('holds')
+      .where('itemId', '==', itemId)
+      .where('status', '==', 'active')
+      .orderBy('placedAt', 'asc');
 
-    const holdsSnapshot = await getDocs(holdsQuery);
-    
-    const position = holdsSnapshot.docs.findIndex(doc => doc.id === holdId) + 1;
-    
+    const holdsSnapshot = await holdsQuery.get();
+
+    const position = holdsSnapshot.docs.findIndex((d) => d.id === holdId) + 1;
+
     return position > 0 ? position : null;
   } catch (error) {
     console.error('Error getting queue position:', error);
@@ -57,27 +46,25 @@ export async function getQueuePosition(itemId: string, holdId: string) {
   }
 }
 
-
 export async function checkExpiredHoldShelfItems() {
   try {
-    const holdShelfQuery = query(collection(db, 'holdShelf'));
-    const holdShelfSnapshot = await getDocs(holdShelfQuery);
-    
+    const holdShelfSnapshot = await db.collection('holdShelf').get();
+
     const now = new Date();
-    const expiredItems = holdShelfSnapshot.docs.filter(doc => {
-      const data = doc.data();
+    const expiredItems = holdShelfSnapshot.docs.filter((d) => {
+      const data = d.data() as HoldShelfItem;
       return data.expiresAt && data.expiresAt.toDate() < now;
     });
 
-    const updates = expiredItems.map(item => {
-      const data = item.data();
-      return updateDoc(doc(db, 'reservations', data.holdId), {
+    const updates = expiredItems.map((item) => {
+      const data = item.data() as HoldShelfItem;
+      return db.collection('reservations').doc(data.holdId).update({
         status: 'expired',
       });
     });
 
     await Promise.all(updates);
-    
+
     return { success: true, expiredCount: expiredItems.length };
   } catch (error) {
     console.error('Error checking expired hold shelf items:', error);
@@ -85,8 +72,15 @@ export async function checkExpiredHoldShelfItems() {
   }
 }
 
-export function formatDate(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
+export function formatDate(date: Date | string | Timestamp): string {
+  let d: Date;
+  if (typeof date === 'string') {
+    d = new Date(date);
+  } else if (date instanceof Timestamp) {
+    d = date.toDate();
+  } else {
+    d = date;
+  }
   return d.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -94,9 +88,15 @@ export function formatDate(date: Date | string): string {
   });
 }
 
-
-export function formatDateTime(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
+export function formatDateTime(date: Date | string | Timestamp): string {
+  let d: Date;
+  if (typeof date === 'string') {
+    d = new Date(date);
+  } else if (date instanceof Timestamp) {
+    d = date.toDate();
+  } else {
+    d = date;
+  }
   return d.toLocaleString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -106,18 +106,40 @@ export function formatDateTime(date: Date | string): string {
   });
 }
 
-
-export function daysBetween(date1: Date | string, date2: Date | string): number {
-  const d1 = typeof date1 === 'string' ? new Date(date1) : date1;
-  const d2 = typeof date2 === 'string' ? new Date(date2) : date2;
+export function daysBetween(date1: Date | string | Timestamp, date2: Date | string | Timestamp): number {
+  let d1: Date;
+  let d2: Date;
   
+  if (typeof date1 === 'string') {
+    d1 = new Date(date1);
+  } else if (date1 instanceof Timestamp) {
+    d1 = date1.toDate();
+  } else {
+    d1 = date1;
+  }
+  
+  if (typeof date2 === 'string') {
+    d2 = new Date(date2);
+  } else if (date2 instanceof Timestamp) {
+    d2 = date2.toDate();
+  } else {
+    d2 = date2;
+  }
+
   const diffTime = Math.abs(d2.getTime() - d1.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
+
   return diffDays;
 }
 
-export function isPastDate(date: Date | string): boolean {
-  const d = typeof date === 'string' ? new Date(date) : date;
+export function isPastDate(date: Date | string | Timestamp): boolean {
+  let d: Date;
+  if (typeof date === 'string') {
+    d = new Date(date);
+  } else if (date instanceof Timestamp) {
+    d = date.toDate();
+  } else {
+    d = date;
+  }
   return d < new Date();
 }
