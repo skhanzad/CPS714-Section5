@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { listApplications } from '@/lib/services/adminService';
-import { ensureAdminApiKey } from '@/lib/middleware/ensureAdminApiKey';
 
 export async function GET(request: NextRequest) {
-  const authError = ensureAdminApiKey(request);
-  if (authError) return authError;
-
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') ?? undefined;

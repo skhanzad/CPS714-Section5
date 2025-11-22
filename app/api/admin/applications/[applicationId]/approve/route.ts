@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { approveApplication } from '@/lib/services/adminService';
-import { ensureAdminApiKey } from '@/lib/middleware/ensureAdminApiKey';
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ applicationId: string }> }
 ) {
-  const authError = ensureAdminApiKey(request);
-  if (authError) return authError;
-
   try {
     const { applicationId } = await params;
     if (!applicationId) {
