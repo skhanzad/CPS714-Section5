@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST, GET } from '@/app/api/items/route';
 import { db } from '@/lib/firebase';
+import { NextRequest } from 'next/server';
 
 vi.mock('@/lib/firebase', () => ({
   db: {
@@ -16,7 +17,7 @@ describe('Items API - POST', () => {
   it('should return 400 if title is missing', async () => {
     const request = {
       json: async () => ({ author: 'Test Author' }),
-    } as any;
+    } as unknown as NextRequest;
 
     const response = await POST(request);
     const data = await response.json();
@@ -28,7 +29,7 @@ describe('Items API - POST', () => {
   it('should return 400 if author is missing', async () => {
     const request = {
       json: async () => ({ title: 'Test Book' }),
-    } as any;
+    } as unknown as NextRequest;
 
     const response = await POST(request);
     const data = await response.json();
@@ -45,7 +46,7 @@ describe('Items API - POST', () => {
       add: mockAdd,
     });
 
-    vi.mocked(db.collection).mockImplementation(mockCollection as any);
+    vi.mocked(db.collection).mockImplementation(mockCollection as unknown as typeof db.collection);
 
     const request = {
       json: async () => ({
@@ -53,7 +54,7 @@ describe('Items API - POST', () => {
         author: 'Test Author',
         isbn: '1234567890',
       }),
-    } as any;
+    } as unknown as NextRequest;
 
     const response = await POST(request);
     const data = await response.json();
@@ -91,13 +92,13 @@ describe('Items API - GET', () => {
       orderBy: vi.fn().mockReturnValue(mockQuery),
     });
 
-    vi.mocked(db.collection).mockImplementation(mockCollection as any);
+    vi.mocked(db.collection).mockImplementation(mockCollection as unknown as typeof db.collection);
 
     const request = {
       nextUrl: {
         searchParams: new URLSearchParams(),
       },
-    } as any;
+    } as unknown as NextRequest;
 
     const response = await GET(request);
     const data = await response.json();

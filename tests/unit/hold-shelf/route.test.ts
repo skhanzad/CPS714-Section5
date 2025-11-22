@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST, GET } from '@/app/api/hold-shelf/route';
 import { db } from '@/lib/firebase';
+import { NextRequest } from 'next/server';
 
 vi.mock('@/lib/firebase', () => ({
   db: {
@@ -16,7 +17,7 @@ describe('Hold Shelf API - POST', () => {
   it('should return 400 if itemId is missing', async () => {
     const request = {
       json: async () => ({}),
-    } as any;
+    } as unknown as NextRequest;
 
     const response = await POST(request);
     const data = await response.json();
@@ -34,11 +35,11 @@ describe('Hold Shelf API - POST', () => {
       doc: vi.fn().mockReturnValue(mockItemRef),
     });
 
-    vi.mocked(db.collection).mockImplementation(mockCollection as any);
+    vi.mocked(db.collection).mockImplementation(mockCollection as unknown as typeof db.collection);
 
     const request = {
       json: async () => ({ itemId: 'item123' }),
-    } as any;
+    } as unknown as NextRequest;
 
     const response = await POST(request);
     const data = await response.json();
@@ -74,11 +75,11 @@ describe('Hold Shelf API - POST', () => {
       return {};
     });
 
-    vi.mocked(db.collection).mockImplementation(mockCollection as any);
+    vi.mocked(db.collection).mockImplementation(mockCollection as unknown as typeof db.collection);
 
     const request = {
       json: async () => ({ itemId: 'item123' }),
-    } as any;
+    } as unknown as NextRequest;
 
     const response = await POST(request);
     const data = await response.json();
@@ -112,13 +113,13 @@ describe('Hold Shelf API - GET', () => {
       orderBy: vi.fn().mockReturnValue(mockQuery),
     });
 
-    vi.mocked(db.collection).mockImplementation(mockCollection as any);
+    vi.mocked(db.collection).mockImplementation(mockCollection as unknown as typeof db.collection);
 
     const request = {
       nextUrl: {
         searchParams: new URLSearchParams(),
       },
-    } as any;
+    } as unknown as NextRequest;
 
     const response = await GET(request);
     const data = await response.json();

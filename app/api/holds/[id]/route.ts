@@ -59,7 +59,14 @@ export async function PATCH(
     }
 
     const now = Timestamp.now();
-    const updateData: any = {
+    const updateData: Partial<{
+      status: string;
+      updatedAt: Timestamp;
+      readyAt?: Timestamp;
+      notifiedAt?: Timestamp;
+      expiresAt?: Timestamp;
+      fulfilledAt?: Timestamp;
+    }> = {
       status,
       updatedAt: now,
     };

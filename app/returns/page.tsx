@@ -30,8 +30,8 @@ export default function ReturnsPage() {
       } else {
         setCheckedOutItems([]);
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch checked out items');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch checked out items');
       setCheckedOutItems([]);
     } finally {
       setLoading(false);
@@ -64,8 +64,8 @@ export default function ReturnsPage() {
       setMessage(data.message);
       
       await fetchCheckedOutItems();
-    } catch (err: any) {
-      setError(err.message || 'Failed to process return');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to process return');
     } finally {
       setProcessingId(null);
     }

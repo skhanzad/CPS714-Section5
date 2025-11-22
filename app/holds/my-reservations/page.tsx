@@ -64,8 +64,8 @@ export default function MyReservationsPage() {
       );
 
       setHolds(holdsWithItems);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch reservations');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch reservations');
       setHolds([]);
     } finally {
       setLoading(false);

@@ -25,8 +25,8 @@ export default function LandingPage() {
 
       setApplications(data.applications || []);
       setShowModal(true);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch applications');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch applications');
     } finally {
       setLoading(false);
     }
@@ -51,8 +51,8 @@ export default function LandingPage() {
       }
 
       await fetchApplications();
-    } catch (err: any) {
-      setError(err.message || 'Failed to approve application');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to approve application');
     } finally {
       setApproving(null);
     }

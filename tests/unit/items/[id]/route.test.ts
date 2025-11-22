@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GET, PATCH } from '@/app/api/items/[id]/route';
 import { db } from '@/lib/firebase';
+import { NextRequest } from 'next/server';
 
 vi.mock('@/lib/firebase', () => ({
   db: {
@@ -22,9 +23,9 @@ describe('Items [id] API - GET', () => {
       doc: vi.fn().mockReturnValue(mockItemRef),
     });
 
-    vi.mocked(db.collection).mockImplementation(mockCollection as any);
+    vi.mocked(db.collection).mockImplementation(mockCollection as unknown as typeof db.collection);
 
-    const request = {} as any;
+    const request = {} as unknown as NextRequest;
     const params = Promise.resolve({ id: 'item123' });
 
     const response = await GET(request, { params });
@@ -53,9 +54,9 @@ describe('Items [id] API - GET', () => {
       doc: vi.fn().mockReturnValue(mockItemRef),
     });
 
-    vi.mocked(db.collection).mockImplementation(mockCollection as any);
+    vi.mocked(db.collection).mockImplementation(mockCollection as unknown as typeof db.collection);
 
-    const request = {} as any;
+    const request = {} as unknown as NextRequest;
     const params = Promise.resolve({ id: 'item123' });
 
     const response = await GET(request, { params });

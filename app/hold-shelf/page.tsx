@@ -45,8 +45,8 @@ export default function HoldShelfPage() {
       } else {
         setAvailableItems([]);
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch data');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch data');
       setHoldShelfItems([]);
       setAvailableItems([]);
     } finally {
@@ -84,8 +84,8 @@ export default function HoldShelfPage() {
       setMessage(data.message);
       setSelectedItem('');
       fetchData();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
