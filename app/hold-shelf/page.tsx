@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import type { Item } from '@/types/item';
+import type { LibraryItem } from '@/types/item';
 import type { HoldShelfItem } from '@/types/holdShelf';
 
 export default function HoldShelfPage() {
   const [holdShelfItems, setHoldShelfItems] = useState<HoldShelfItem[]>([]);
-  const [availableItems, setAvailableItems] = useState<Item[]>([]);
+  const [availableItems, setAvailableItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState('');
   const [message, setMessage] = useState('');

@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import type { Item } from '@/types/item';
+import type { LibraryItem } from '@/types/item';
 
 export default function PlaceHoldPage() {
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [libraryCardNumber, setLibraryCardNumber] = useState('');
   const [memberName, setMemberName] = useState('');

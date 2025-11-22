@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import type { Item } from '@/types/item';
+import type { LibraryItem } from '@/types/item';
 
 export default function ReturnsPage() {
-  const [checkedOutItems, setCheckedOutItems] = useState<Item[]>([]);
+  const [checkedOutItems, setCheckedOutItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -38,7 +38,7 @@ export default function ReturnsPage() {
     }
   };
 
-  const handleReturn = async (item: Item) => {
+  const handleReturn = async (item: LibraryItem) => {
     if (!confirm(`Process return for "${item.title}"?`)) {
       return;
     }
