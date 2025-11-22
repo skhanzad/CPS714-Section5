@@ -1,0 +1,2 @@
+import React from 'react'; import Navbar from './components/Navbar'; import Dashboard from './pages/Dashboard';
+export default function App(){ return (<div style={{fontFamily:'system-ui, Arial'}}><Navbar/><div style={{maxWidth:960,margin:'16px auto',padding:16}}><Dashboard/></div></div>)}

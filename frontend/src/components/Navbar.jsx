@@ -1,0 +1,1 @@
+import React from 'react'; export default function Navbar(){ return (<div style={{background:'#1b4b91',color:'#fff',padding:12}}><strong>LibraLite • Inventory Management</strong></div>)}
