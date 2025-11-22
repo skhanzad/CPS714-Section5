@@ -9,12 +9,12 @@ vi.mock('@/lib/firebase', () => ({
   },
 }));
 
-describe('Items [id] API - GET', () => {
+describe('Items [id] - GET', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should return 404 if item does not exist', async () => {
+  it('returns 404 if item not found', async () => {
     const mockItemRef = {
       get: vi.fn().mockResolvedValue({ exists: false }),
     };
@@ -35,7 +35,7 @@ describe('Items [id] API - GET', () => {
     expect(data.error).toBe('Item not found');
   });
 
-  it('should return item if it exists', async () => {
+  it('returns item if exists', async () => {
     const mockItemData = {
       title: 'Test Book',
       author: 'Test Author',

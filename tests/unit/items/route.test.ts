@@ -9,12 +9,12 @@ vi.mock('@/lib/firebase', () => ({
   },
 }));
 
-describe('Items API - POST', () => {
+describe('Items - POST', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should return 400 if title is missing', async () => {
+  it('returns 400 if title missing', async () => {
     const request = {
       json: async () => ({ author: 'Test Author' }),
     } as unknown as NextRequest;
@@ -26,7 +26,7 @@ describe('Items API - POST', () => {
     expect(data.error).toBe('Title and author are required');
   });
 
-  it('should return 400 if author is missing', async () => {
+  it('returns 400 if author missing', async () => {
     const request = {
       json: async () => ({ title: 'Test Book' }),
     } as unknown as NextRequest;
@@ -38,7 +38,7 @@ describe('Items API - POST', () => {
     expect(data.error).toBe('Title and author are required');
   });
 
-  it('should create an item successfully', async () => {
+  it('creates item successfully', async () => {
     const mockItemRef = { id: 'item123' };
     const mockAdd = vi.fn().mockResolvedValue(mockItemRef);
 
@@ -68,12 +68,12 @@ describe('Items API - POST', () => {
   });
 });
 
-describe('Items API - GET', () => {
+describe('Items - GET', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should return all items', async () => {
+  it('returns all items', async () => {
     const mockItems = [
       { id: 'item1', title: 'Book 1', author: 'Author 1' },
       { id: 'item2', title: 'Book 2', author: 'Author 2' },

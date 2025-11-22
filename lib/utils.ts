@@ -1,5 +1,4 @@
 import { db } from './firebase';
-import { HoldShelfItem } from '@/types';
 import { Timestamp } from 'firebase-admin/firestore';
 
 export async function recalculateQueuePositions(itemId: string) {
@@ -42,32 +41,6 @@ export async function getQueuePosition(itemId: string, holdId: string) {
     return position > 0 ? position : null;
   } catch (error) {
     console.error('Error getting queue position:', error);
-    throw error;
-  }
-}
-
-export async function checkExpiredHoldShelfItems() {
-  try {
-    const holdShelfSnapshot = await db.collection('holdShelf').get();
-
-    const now = new Date();
-    const expiredItems = holdShelfSnapshot.docs.filter((d) => {
-      const data = d.data() as HoldShelfItem;
-      return data.expiresAt && data.expiresAt.toDate() < now;
-    });
-
-    const updates = expiredItems.map((item) => {
-      const data = item.data() as HoldShelfItem;
-      return db.collection('reservations').doc(data.holdId).update({
-        status: 'expired',
-      });
-    });
-
-    await Promise.all(updates);
-
-    return { success: true, expiredCount: expiredItems.length };
-  } catch (error) {
-    console.error('Error checking expired hold shelf items:', error);
     throw error;
   }
 }

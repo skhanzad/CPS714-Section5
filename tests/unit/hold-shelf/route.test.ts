@@ -9,12 +9,12 @@ vi.mock('@/lib/firebase', () => ({
   },
 }));
 
-describe('Hold Shelf API - POST', () => {
+describe('Hold Shelf - POST', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should return 400 if itemId is missing', async () => {
+  it('returns 400 if itemId missing', async () => {
     const request = {
       json: async () => ({}),
     } as unknown as NextRequest;
@@ -26,7 +26,7 @@ describe('Hold Shelf API - POST', () => {
     expect(data.error).toBe('Item ID is required');
   });
 
-  it('should return 404 if item does not exist', async () => {
+  it('returns 404 if item not found', async () => {
     const mockItemRef = {
       get: vi.fn().mockResolvedValue({ exists: false }),
     };
@@ -48,7 +48,7 @@ describe('Hold Shelf API - POST', () => {
     expect(data.error).toBe('Item not found');
   });
 
-  it('should return 404 if no active holds for item', async () => {
+  it('returns 404 if no active holds', async () => {
     const mockItemRef = {
       get: vi.fn().mockResolvedValue({
         exists: true,
@@ -89,12 +89,12 @@ describe('Hold Shelf API - POST', () => {
   });
 });
 
-describe('Hold Shelf API - GET', () => {
+describe('Hold Shelf - GET', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should return all hold shelf items', async () => {
+  it('returns all hold shelf items', async () => {
     const mockHoldShelfItems = [
       { id: 'hold1', itemTitle: 'Book 1', libraryCardNumber: 'LIB001' },
       { id: 'hold2', itemTitle: 'Book 2', libraryCardNumber: 'LIB002' },
