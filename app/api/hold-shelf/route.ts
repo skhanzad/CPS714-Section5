@@ -1,6 +1,7 @@
+// Section 5, Team 3
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { FieldValue, Timestamp } from 'firebase-admin/firestore';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function POST(request: NextRequest) {
   try {
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
       dueDate: null,
       onHoldShelf: true,
       holdShelfFor: holdData.libraryCardNumber,
-      updatedAt: now.toISOString(),
+      updatedAt: now,
     });
 
     return NextResponse.json({

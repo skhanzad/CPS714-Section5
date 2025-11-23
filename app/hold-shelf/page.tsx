@@ -1,8 +1,9 @@
+// Section 5, Team 3
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import type { LibraryItem } from '@/types/item';
+import type { LibraryItem } from '@/types';
 import type { HoldShelfItem } from '@/types/holdShelf';
 
 export default function HoldShelfPage() {

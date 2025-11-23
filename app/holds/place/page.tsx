@@ -1,8 +1,9 @@
+// Section 5, Team 3
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import type { LibraryItem } from '@/types/item';
+import type { LibraryItem } from '@/types';
 
 export default function PlaceHoldPage() {
   const [items, setItems] = useState<LibraryItem[]>([]);
@@ -197,7 +198,7 @@ export default function PlaceHoldPage() {
                   )}
                   {item.dueDate && (
                     <p className="text-xs text-gray-500 mt-1">
-                      Due: {new Date(item.dueDate._seconds * 1000).toLocaleDateString()}
+                      Due: {new Date(item.dueDate.toMillis()).toLocaleDateString()}
                     </p>
                   )}
                 </div>

@@ -1,3 +1,4 @@
+// Section 5, Team 3
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
 import { Timestamp } from 'firebase-admin/firestore';

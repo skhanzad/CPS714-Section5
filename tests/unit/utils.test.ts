@@ -1,3 +1,4 @@
+// Section 5, Team 3
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getQueuePosition } from '@/lib/utils';
 import { db } from '@/lib/firebase';
