@@ -40,6 +40,23 @@ export const listApplications = async (status?: string): Promise<MemberApplicati
     .filter((app): app is MemberApplication => Boolean(app));
 };
 
+export const listMembers = async (): Promise<MemberRecord[]> => {
+  const snapshot = await membersCollection()
+    .where('status', '==', 'approved')
+    .get();
+  
+  const members = snapshot.docs.map(doc => {
+    const data = doc.data() as MemberRecordDoc;
+    return {
+      id: doc.id,
+      ...data
+    } satisfies MemberRecord;
+  });
+  
+  // Sort by library card number in memory
+  return members.sort((a, b) => a.libraryCardNumber.localeCompare(b.libraryCardNumber));
+};
+
 export const approveApplication = async (applicationId: string): Promise<MemberRecord> => {
   const now = new Date().toISOString();
 

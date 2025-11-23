@@ -1,11 +1,28 @@
 import type { NextFunction, Request, Response } from 'express';
-import { approveApplication as approveApplicationService, listApplications } from '../services/adminService';
+import { approveApplication as approveApplicationService, listApplications, listMembers } from '../services/adminService';
 
 export const listApplicationsHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const status = typeof req.query.status === 'string' ? req.query.status : undefined;
     const applications = await listApplications(status);
     res.json({ applications });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ message: error.message });
+    } else {
+      next(error);
+    }
+  }
+};
+
+export const listMembersHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const members = await listMembers();
+    const sanitized = members.map(({ pinHash: _ignored, ...member }) => {
+      void _ignored;
+      return member;
+    });
+    res.json({ members: sanitized });
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ message: error.message });

@@ -1,11 +1,22 @@
 import type { Request, Response, NextFunction } from 'express';
 import { checkoutSchema, checkinSchema } from '../validators/loanValidators';
-import { checkoutItem, checkinItem, getMemberLoans, getMemberFines } from '../services/loanService';
+import { checkoutItem, checkinItem, getMemberLoans, getMemberFines, getAvailableItems, getAllItems, getActiveLoans } from '../services/loanService';
 
 export const checkout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  // Debug: log what we received
+  console.log('Checkout request body:', req.body);
+  console.log('Checkout request headers:', req.headers);
+  
   const parsed = checkoutSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ message: 'Invalid checkout payload', issues: parsed.error.flatten() });
+    const errorDetails = parsed.error.errors.map(err => `${err.path.join('.')}: ${err.message}`).join(', ');
+    res.status(400).json({ 
+      message: `Invalid checkout payload: ${errorDetails}`,
+      issues: parsed.error.flatten(),
+      received: req.body,
+      bodyType: typeof req.body,
+      bodyKeys: req.body ? Object.keys(req.body) : 'no body'
+    });
     return;
   }
   
@@ -65,6 +76,33 @@ export const getFines = async (req: Request, res: Response, next: NextFunction):
   try {
     const fines = await getMemberFines(memberId);
     res.json(fines);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listAvailableItems = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const items = await getAvailableItems();
+    res.json(items);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listAllItems = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const items = await getAllItems();
+    res.json(items);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listActiveLoans = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const loans = await getActiveLoans();
+    res.json(loans);
   } catch (error) {
     next(error);
   }

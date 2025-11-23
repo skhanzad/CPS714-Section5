@@ -127,14 +127,38 @@ export const checkinItem = async (input: CheckinInput): Promise<{ loan: Loan; fi
   });
 };
 
-// Get active loans for a member
-export const getMemberLoans = async (memberId: string): Promise<Loan[]> => {
+// Get all loans for a member with item details
+export const getMemberLoans = async (memberId: string): Promise<(Loan & { item?: Item; potentialLateFee?: number })[]> => {
   const snapshot = await loansCollection()
     .where('memberId', '==', memberId)
-    .where('status', 'in', ['checked-out', 'overdue'])
     .get();
   
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Loan));
+  const loans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Loan));
+  
+  // Fetch item details and calculate potential late fees
+  const now = new Date();
+  const loansWithDetails = await Promise.all(
+    loans.map(async (loan) => {
+      const itemSnap = await itemsCollection().doc(loan.itemId).get();
+      const item = itemSnap.exists ? (itemSnap.data() as Item) : undefined;
+      
+      // Calculate potential late fee if item is currently checked out and overdue
+      let potentialLateFee: number | undefined;
+      if (loan.status === 'checked-out' || loan.status === 'overdue') {
+        const dueDate = new Date(loan.dueDate);
+        potentialLateFee = calculateLateFee(dueDate, now);
+      }
+      
+      return { ...loan, item, potentialLateFee };
+    })
+  );
+  
+  // Sort by checkout date descending (most recent first)
+  return loansWithDetails.sort((a, b) => {
+    const dateA = new Date(a.checkoutDate).getTime();
+    const dateB = new Date(b.checkoutDate).getTime();
+    return dateB - dateA;
+  });
 };
 
 // Get pending fines for a member
@@ -145,4 +169,38 @@ export const getMemberFines = async (memberId: string): Promise<Fine[]> => {
     .get();
   
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Fine));
+};
+
+// Get all available items
+export const getAvailableItems = async (): Promise<Item[]> => {
+  const snapshot = await itemsCollection()
+    .where('isAvailable', '==', true)
+    .get();
+  
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Item));
+};
+
+// Get all items (for staff)
+export const getAllItems = async (): Promise<Item[]> => {
+  const snapshot = await itemsCollection().get();
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Item));
+};
+
+// Get active loans (for staff to see what's checked out)
+export const getActiveLoans = async (): Promise<(Loan & { item?: Item })[]> => {
+  const snapshot = await loansCollection()
+    .where('status', 'in', ['checked-out', 'overdue'])
+    .get();
+  
+  const loans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Loan));
+  
+  const loansWithItems = await Promise.all(
+    loans.map(async (loan) => {
+      const itemSnap = await itemsCollection().doc(loan.itemId).get();
+      const item = itemSnap.exists ? (itemSnap.data() as Item) : undefined;
+      return { ...loan, item };
+    })
+  );
+  
+  return loansWithItems;
 };

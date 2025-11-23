@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { applicationSchema, applicationIdSchema, loginSchema } from '../validators/memberValidators';
 import { submitApplication, getApplication, authenticateMember } from '../services/memberService';
+import { getMemberLoans as getLoans, getMemberFines as getFines } from '../services/loanService';
 import { generateSessionToken } from '../utils/session';
 
 export const applyForMembership = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -62,5 +63,51 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
     } else {
       next(error);
     }
+  }
+};
+
+export const getMemberLoans = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { memberId } = req.params;
+  if (!memberId) {
+    res.status(400).json({ message: 'Member ID required' });
+    return;
+  }
+
+  try {
+    // Verify member exists
+    const { db } = await import('../config/firebase');
+    const memberSnap = await db.collection('members').doc(memberId).get();
+    if (!memberSnap.exists) {
+      res.status(404).json({ message: 'Member not found' });
+      return;
+    }
+
+    const loans = await getLoans(memberId);
+    res.json(loans);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMemberFines = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { memberId } = req.params;
+  if (!memberId) {
+    res.status(400).json({ message: 'Member ID required' });
+    return;
+  }
+
+  try {
+    // Verify member exists
+    const { db } = await import('../config/firebase');
+    const memberSnap = await db.collection('members').doc(memberId).get();
+    if (!memberSnap.exists) {
+      res.status(404).json({ message: 'Member not found' });
+      return;
+    }
+
+    const fines = await getFines(memberId);
+    res.json(fines);
+  } catch (error) {
+    next(error);
   }
 };
