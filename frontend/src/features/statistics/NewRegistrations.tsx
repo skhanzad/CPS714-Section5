@@ -7,11 +7,19 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { newRegistrationInfo } from './DummyData';
 
+//skeleton of rows for the table
+interface RowData { 
+ userName: string;
+  FirstbookID: number;
+   RegistrationDate: number;
 
-function createData(userName, FirstbookID, RegistrationDate) {
-  return { userName, FirstbookID, RegistrationDate };
 }
 
+// type script so we gotta have types for createData function (also for some god forsaken reason ts is case sensitive when declaring types loooooveeee itttt https://tenor.com/view/peter-griffin-crashing-out-breaking-everything-nosolohit-gif-13296016008002848344)
+function createData( userName: string, FirstbookID: number, RegistrationDate: number ): RowData {
+  return { userName, FirstbookID, RegistrationDate };
+}
+//take each object from dummy data and then maps it so that it fits within RowData format
 const rows = newRegistrationInfo.map((info) => createData(info.name, info.firstBookId, info.registrationDate));
 
 export default function BasicTable() {
@@ -28,7 +36,7 @@ export default function BasicTable() {
         <TableBody>
           {rows.map((row) => (
             <TableRow
-              key={row.userName}
+              key={row.userName} //gives each row a unique key using the usernames
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">

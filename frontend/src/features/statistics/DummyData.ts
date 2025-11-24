@@ -18,7 +18,14 @@ export const checkedoutDates = {
 
 };
 
-export const newRegistrationInfo = [
+export interface RegistrationInfo {
+name: string;
+firstBookId: number;
+registrationDate: number;
+
+}
+
+export const newRegistrationInfo: RegistrationInfo[] = [
   {name: "ah", firstBookId: 1, registrationDate:5 },  
      {name: "Baijo", firstBookId:2 , registrationDate:4 },  
      {name: "Maliha", firstBookId: 3, registrationDate: 3},  
