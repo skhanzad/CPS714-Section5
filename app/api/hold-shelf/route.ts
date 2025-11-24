@@ -111,6 +111,8 @@ export async function GET(request: NextRequest) {
       return {
         id: doc.id,
         ...data,
+        placedOnShelfAt: data.placedOnShelfAt?.toDate?.()?.toISOString() || data.placedOnShelfAt,
+        expiresAt: data.expiresAt?.toDate?.()?.toISOString() || data.expiresAt,
       };
     });
 

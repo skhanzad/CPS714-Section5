@@ -30,12 +30,12 @@ export default function PlaceHoldPage() {
         console.error('Failed to load session:', err);
       }
     }
-    fetchCheckedOutItems();
+    fetchAllItems();
   }, []);
 
-  const fetchCheckedOutItems = async () => {
+  const fetchAllItems = async () => {
     try {
-      const response = await fetch('/api/items?isCheckedOut=true');
+      const response = await fetch('/api/items?isCheckedOut=false');
       const data = await response.json();
       
       if (!response.ok) {
@@ -179,26 +179,35 @@ export default function PlaceHoldPage() {
 
         {loading ? (
           <div className="text-center py-8">
-            <p className="text-gray-600">Loading checked out items...</p>
+            <p className="text-gray-600">Loading items...</p>
           </div>
         ) : items.length === 0 ? (
           <div className="bg-white rounded-lg shadow-md p-6">
-            <p className="text-gray-600 text-center">No checked out items available for holds at this time.</p>
+            <p className="text-gray-600 text-center">No items available at this time.</p>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Currently Checked Out Items</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Available Items</h2>
             <div className="space-y-3">
-              {items.map((item) => (
+              {items.filter((item) => !item.isCheckedOut).map((item) => (
                 <div key={item.id} className="border border-gray-200 rounded-md p-4">
                   <h3 className="font-semibold text-gray-900">{item.title}</h3>
                   <p className="text-sm text-gray-600">by {item.author}</p>
                   {item.isbn && (
                     <p className="text-xs text-gray-500 mt-1">ISBN: {item.isbn}</p>
                   )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Status: {item.isCheckedOut ? 'Checked Out' : 'Available'}
+                  </p>
                   {item.dueDate && (
                     <p className="text-xs text-gray-500 mt-1">
-                      Due: {new Date(item.dueDate.toMillis()).toLocaleDateString()}
+                      Due: {new Date(
+                        typeof item.dueDate === 'object' && item.dueDate && 'toMillis' in item.dueDate 
+                          ? (item.dueDate as any).toMillis() 
+                          : typeof item.dueDate === 'object' && item.dueDate && '_seconds' in item.dueDate
+                          ? (item.dueDate as any)._seconds * 1000
+                          : item.dueDate
+                      ).toLocaleDateString()}
                     </p>
                   )}
                 </div>

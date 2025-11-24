@@ -61,6 +61,9 @@ export async function GET(request: NextRequest) {
       return {
         id: doc.id,
         ...data,
+        dueDate: data.dueDate?.toDate?.()?.toISOString() || data.dueDate,
+        createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt,
       };
     });
 

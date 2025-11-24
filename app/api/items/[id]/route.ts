@@ -24,6 +24,9 @@ export async function GET(
     return NextResponse.json({
       id: itemSnap.id,
       ...data,
+      dueDate: data?.dueDate?.toDate?.()?.toISOString() || data?.dueDate,
+      createdAt: data?.createdAt?.toDate?.()?.toISOString() || data?.createdAt,
+      updatedAt: data?.updatedAt?.toDate?.()?.toISOString() || data?.updatedAt,
     });
   } catch (error) {
     console.error('Error fetching item:', error);
@@ -54,7 +57,7 @@ export async function PATCH(
     }
 
     const updateData: Partial<LibraryItem> = {
-      updatedAt: Timestamp.now(),
+      updatedAt: Timestamp.now().toDate().toISOString(),
     };
 
     if (isCheckedOut !== undefined) {
@@ -81,6 +84,9 @@ export async function PATCH(
     return NextResponse.json({
       id: updatedSnap.id,
       ...data,
+      dueDate: data?.dueDate?.toDate?.()?.toISOString() || data?.dueDate,
+      createdAt: data?.createdAt?.toDate?.()?.toISOString() || data?.createdAt,
+      updatedAt: data?.updatedAt?.toDate?.()?.toISOString() || data?.updatedAt,
     });
   } catch (error) {
     console.error('Error updating item:', error);

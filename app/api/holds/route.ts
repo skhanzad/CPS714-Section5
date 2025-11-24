@@ -25,14 +25,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const itemData = itemSnap.data();
-    if (!itemData || !itemData.isCheckedOut) {
-      return NextResponse.json(
-        { error: 'Item is currently available, no hold needed' },
-        { status: 400 }
-      );
-    }
-
     const existingHoldsQuery = await db.collection('reservations')
       .where('itemId', '==', itemId)
       .where('libraryCardNumber', '==', libraryCardNumber)
@@ -110,6 +102,11 @@ export async function GET(request: NextRequest) {
       return {
         id: doc.id,
         ...data,
+        placedAt: data.placedAt?.toDate?.()?.toISOString() || data.placedAt,
+        readyAt: data.readyAt?.toDate?.()?.toISOString() || data.readyAt,
+        expiresAt: data.expiresAt?.toDate?.()?.toISOString() || data.expiresAt,
+        fulfilledAt: data.fulfilledAt?.toDate?.()?.toISOString() || data.fulfilledAt,
+        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt,
       };
     });
 

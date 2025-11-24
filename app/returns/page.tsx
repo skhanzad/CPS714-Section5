@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import type { LibraryItem } from '@/types/item';
+import type { LibraryItem } from '@/types';
 
 export default function ReturnsPage() {
   const [checkedOutItems, setCheckedOutItems] = useState<LibraryItem[]>([]);
@@ -71,16 +71,14 @@ export default function ReturnsPage() {
     }
   };
 
-  const isOverdue = (dueDate?: { _seconds: number; _nanoseconds: number }) => {
+  const isOverdue = (dueDate?: string) => {
     if (!dueDate) return false;
-    const dueDateMs = dueDate._seconds * 1000;
-    return new Date(dueDateMs) < new Date();
+    return new Date(dueDate) < new Date();
   };
 
-  const getDaysUntilDue = (dueDate?: { _seconds: number; _nanoseconds: number }) => {
+  const getDaysUntilDue = (dueDate?: string) => {
     if (!dueDate) return null;
-    const dueDateMs = dueDate._seconds * 1000;
-    const days = Math.ceil((dueDateMs - new Date().getTime()) / (1000 * 60 * 60 * 24));
+    const days = Math.ceil((new Date(dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
     return days;
   };
 
@@ -174,8 +172,8 @@ export default function ReturnsPage() {
                       <div className="mb-4">
                         <p className="text-sm text-gray-600">
                           <span className="font-medium">Due Date:</span>{' '}
-                          {new Date(item.dueDate._seconds * 1000).toLocaleDateString()} at{' '}
-                          {new Date(item.dueDate._seconds * 1000).toLocaleTimeString()}
+                          {new Date(item.dueDate).toLocaleDateString()} at{' '}
+                          {new Date(item.dueDate).toLocaleTimeString()}
                         </p>
                       </div>
                     )}

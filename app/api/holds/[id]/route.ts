@@ -23,6 +23,11 @@ export async function GET(
     return NextResponse.json({
       id: holdSnap.id,
       ...data,
+      placedAt: data?.placedAt?.toDate?.()?.toISOString() || data?.placedAt,
+      readyAt: data?.readyAt?.toDate?.()?.toISOString() || data?.readyAt,
+      expiresAt: data?.expiresAt?.toDate?.()?.toISOString() || data?.expiresAt,
+      fulfilledAt: data?.fulfilledAt?.toDate?.()?.toISOString() || data?.fulfilledAt,
+      updatedAt: data?.updatedAt?.toDate?.()?.toISOString() || data?.updatedAt,
     });
   } catch (error) {
     console.error('Error fetching hold:', error);
@@ -89,6 +94,11 @@ export async function PATCH(
     return NextResponse.json({
       id: updatedSnap.id,
       ...data,
+      placedAt: data?.placedAt?.toDate?.()?.toISOString() || data?.placedAt,
+      readyAt: data?.readyAt?.toDate?.()?.toISOString() || data?.readyAt,
+      expiresAt: data?.expiresAt?.toDate?.()?.toISOString() || data?.expiresAt,
+      fulfilledAt: data?.fulfilledAt?.toDate?.()?.toISOString() || data?.fulfilledAt,
+      updatedAt: data?.updatedAt?.toDate?.()?.toISOString() || data?.updatedAt,
     });
   } catch (error) {
     console.error('Error updating hold:', error);

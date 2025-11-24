@@ -158,7 +158,13 @@ export default function MyReservationsPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                <Link
+                  href="/holds/place"
+                  className="button primary"
+                >
+                  Place a Hold
+                </Link>
+                <h2 className="text-xl font-semibold text-gray-900">
                   Active Holds ({holds.length})
                 </h2>
                 {holds.map((hold) => (

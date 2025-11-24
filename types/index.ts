@@ -1,5 +1,4 @@
 // Section 5, Team 3
-import { Timestamp } from 'firebase-admin/firestore';
 
 export interface LibraryItem {
   id: string;
@@ -8,7 +7,7 @@ export interface LibraryItem {
   isbn?: string;
   isCheckedOut: boolean;
   currentBorrowerId?: string;
-  dueDate?: Timestamp;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  dueDate?: string;
+  createdAt: string;
+  updatedAt: string;
 }
